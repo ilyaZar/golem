@@ -489,3 +489,30 @@ check_name_length <- function(name) {
     )
   )
 }
+
+# This function is used for checking
+# that the name argument of the function
+# creating modules is does not have a 'mod_'
+# as this is prepended per default.
+check_name_syntax <- function(name) {
+  check_mod <- grepl("^mod_", name)
+  name_proposed <- gsub("^mod_", "", name)
+  if (isTRUE(check_mod)) {
+    msg <- paste0(
+      "Argument 'name' starts with 'mod_' but {golem} prepends 'mod_' to your",
+      " module name automatically.\nDo you want to name your module: "
+    )
+    cat(msg)
+    ask <- menu(paste0("'mod_", c(name_proposed, name), "'?"))
+    if (ask == 1) {
+      return(name_proposed)
+    } else if (ask == 2) {
+      # optional
+      # message("Keeping name: '", name, "' as module name.")
+      return(name)
+    }
+  } else {
+    warning("Could not check name syntax properly ...")
+    return(invisible(name))
+  }
+}
